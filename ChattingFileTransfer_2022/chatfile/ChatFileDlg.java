@@ -75,7 +75,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
        */
       m_LayerMgr.AddLayer(new ChatFileDlg("GUI"));
       
-      //m_LayerMgr.ConnectLayers(" NI ( *Ethernet ( *ChatApp ( *GUI ) *FileApp ( *GUI ) )");
+      m_LayerMgr.ConnectLayers(" NI ( *Ethernet ( *ChatApp ( *GUI ) *FileApp ( *GUI ) )");
    }
 
    public ChatFileDlg(String pName) {
@@ -120,8 +120,8 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          @Override
          public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            //FileAppLayer fileLayer= (FileAppLayer) GetUnderLayer(1);
-            //fileLayer.setAndStartSendFile();
+            FileAppLayer fileLayer= (FileAppLayer) GetUnderLayer(1);
+            fileLayer.setAndStartSendFile();
          }
       });
       

@@ -26,8 +26,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jnetpcap.PcapIf;
 
-import org.jnetpcap.PcapIf;
-
 public class ChatFileDlg extends JFrame implements BaseLayer {
 
    public int nUpperLayerCount = 0;

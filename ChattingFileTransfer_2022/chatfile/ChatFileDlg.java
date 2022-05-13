@@ -47,16 +47,16 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
 
    Container contentPane;
 
-   JTextArea ChattingArea; //ÃªÆÃÈ­¸é º¸¿©ÁÖ´Â À§Ä¡
+   JTextArea ChattingArea; //Ãªï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½Ä¡
    JTextArea srcMacAddress;
    JTextArea dstMacAddress;
-   JProgressBar fileProgress = new JProgressBar();
+   JProgressBar progressBar;
 
-   JLabel lblsrc;  // Label(ÀÌ¸§)
+   JLabel lblsrc;  // Label(ï¿½Ì¸ï¿½)
    JLabel lbldst;
 
-   JButton Setting_Button; //Port¹øÈ£(ÁÖ¼Ò)¸¦ ÀÔ·Â¹ÞÀº ÈÄ ¿Ï·á¹öÆ°¼³Á¤
-   JButton Chat_send_Button; //Ã¤ÆÃÈ­¸éÀÇ Ã¤ÆÃ ÀÔ·Â ¿Ï·á ÈÄ data Send¹öÆ°
+   JButton Setting_Button; //Portï¿½ï¿½È£(ï¿½Ö¼ï¿½)ï¿½ï¿½ ï¿½Ô·Â¹ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½
+   JButton Chat_send_Button; //Ã¤ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Ï·ï¿½ ï¿½ï¿½ data Sendï¿½ï¿½Æ°
 
    static JComboBox<String> NICComboBox;
 
@@ -70,7 +70,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       m_LayerMgr.AddLayer(new ChatAppLayer("ChatApp"));
       m_LayerMgr.AddLayer(new FileAppLayer("FileApp"));
       /*
-       * FileAppLayerµµ ¹­¾îÁà¾ßÇÔ
+       * FileAppLayerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
        */
       m_LayerMgr.AddLayer(new ChatFileDlg("GUI"));
       /////////////////////////////////////////////////////////////////////////////
@@ -105,12 +105,12 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       jfc.setFileFilter(new FileNameExtensionFilter("txt", "txt"));
         jfc.setMultiSelectionEnabled(false);
 
-      jbt_open = new JButton("¿­±â");
+      jbt_open = new JButton("ï¿½ï¿½ï¿½ï¿½");
       jbt_open.setBounds(290, 17, 60, 22);
       FilePanel.add(jbt_open);
       
       
-      jbt_save = new JButton("Àü¼Û");
+      jbt_save = new JButton("ï¿½ï¿½ï¿½ï¿½");
       jbt_save.setEnabled(false);
       jbt_save.setBounds(290, 47, 60, 22);
       FilePanel.add(jbt_save);
@@ -120,8 +120,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          @Override
          public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            FileAppLayer fileLayer= (FileAppLayer) GetUnderLayer(1);
-            fileLayer.setAndStartSendFile();
+            ((FileAppLayer) GetUnderLayer(1)).setAndStartSendFile();
          }
       });
       
@@ -138,9 +137,9 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          }
       });
       
-      fileProgress = new JProgressBar();
-      fileProgress.setBounds(10, 45, 270, 25);
-      FilePanel.add(fileProgress);
+      progressBar = new JProgressBar();
+      progressBar.setBounds(10, 45, 270, 25);
+      FilePanel.add(progressBar);
 /////////////////////////////////////////////////////////////////////////////
       JPanel chattingPanel = new JPanel();// chatting panel
       chattingPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "chatting",
@@ -170,7 +169,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       chattingInputPanel.add(ChattingWrite);
       ChattingWrite.setColumns(10);// writing area
 
-      JPanel settingPanel = new JPanel(); //Setting °ü·Ã ÆÐ³Î
+      JPanel settingPanel = new JPanel(); //Setting ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½
       settingPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "setting",
             TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
       settingPanel.setBounds(380, 5, 236, 371);
@@ -184,8 +183,8 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       sourceAddressPanel.setLayout(null);
 
       lblsrc = new JLabel("Source Mac Address");
-      lblsrc.setBounds(10, 115, 170, 20); //À§Ä¡ ÁöÁ¤
-      settingPanel.add(lblsrc); //panel Ãß°¡
+      lblsrc.setBounds(10, 115, 170, 20); //ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+      settingPanel.add(lblsrc); //panel ï¿½ß°ï¿½
 
       srcMacAddress = new JTextArea();
       srcMacAddress.setBounds(2, 2, 170, 20); 
@@ -215,15 +214,15 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
    
       
       
-      NILayer tempNiLayer = (NILayer) m_LayerMgr.GetLayer("NI"); //ÄÞº¸¹Ú½º ¸®½ºÆ®¿¡ Ãß°¡ÇÏ±â À§ÇÑ ÀÎÅÍÆäÀÌ½º °´Ã¼
+      NILayer tempNiLayer = (NILayer) m_LayerMgr.GetLayer("NI"); //ï¿½Þºï¿½ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½Ã¼
 
-      for (int i = 0; i < tempNiLayer.getAdapterList().size(); i++) { //³×Æ®¿öÅ© ÀÎÅÍÆäÀÌ½º°¡ ÀúÀåµÈ ¾îµªÅÍ ¸®½ºÆ®ÀÇ »çÀÌÁî¸¸Å­ÀÇ ¹è¿­ »ý¼º
+      for (int i = 0; i < tempNiLayer.getAdapterList().size(); i++) { //ï¿½ï¿½Æ®ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½îµªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½î¸¸Å­ï¿½ï¿½ ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½
          //NICComboBox.addItem(((NILayer) m_LayerMgr.GetLayer("NI")).GetAdapterObject(i).getDescription());
          PcapIf pcapIf = tempNiLayer.GetAdapterObject(i); //
-         NICComboBox.addItem(pcapIf.getName()); // NIC ¼±ÅÃ Ã¢¿¡ ¾î´ðÅÍ¸¦ º¸¿©ÁÜ
+         NICComboBox.addItem(pcapIf.getName()); // NIC ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       }
 
-      NICComboBox.addActionListener(new ActionListener() { //combo¹Ú½º¸¦ ´­·¶À» ¶§ÀÇ µ¿ÀÛ
+      NICComboBox.addActionListener(new ActionListener() { //comboï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -244,7 +243,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          }
       });
 
-      try {// ÀúÀý·Î MACÁÖ¼Ò º¸ÀÌ°ÔÇÏ±â
+      try {// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MACï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ï¿½Ï±ï¿½
          srcMacAddress.append(get_MacAddress(
                ((NILayer) m_LayerMgr.GetLayer("NI")).GetAdapterObject(adapterNumber).getHardwareAddress()));
       } catch (IOException e1) {
@@ -271,56 +270,56 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-         if (e.getSource() == Setting_Button) { //setting ¹öÆ° ´©¸¦ ½Ã
+         if (e.getSource() == Setting_Button) { //setting ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 
-            if (Setting_Button.getText() == "Reset") { //reset ´­·ÁÁ³À» °æ¿ì,
-               srcMacAddress.setText("");  //ÁÖ¼Ò °ø¹éÀ¸·Î ¹Ù²ñ
-               dstMacAddress.setText("");  //ÁÖ¼Ò °ø¹éÀ¸·Î ¹Ù²ñ
-               Setting_Button.setText("Setting"); //¹öÆ°À» ´©¸£¸é, settingÀ¸·Î ¹Ù²ñ
-               srcMacAddress.setEnabled(true);  //¹öÆ°À» È°¼ºÈ­½ÃÅ´
-               dstMacAddress.setEnabled(true);  //¹öÆ°À» È°¼ºÈ­½ÃÅ´
+            if (Setting_Button.getText() == "Reset") { //reset ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+               srcMacAddress.setText("");  //ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½
+               dstMacAddress.setText("");  //ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½
+               Setting_Button.setText("Setting"); //ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, settingï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½
+               srcMacAddress.setEnabled(true);  //ï¿½ï¿½Æ°ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½Å´
+               dstMacAddress.setEnabled(true);  //ï¿½ï¿½Æ°ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½Å´
             }  
-            else { //¼Û¼ö½ÅÁÖ¼Ò ¼³Á¤
+            else { //ï¿½Û¼ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½
                 
                byte[] srcAddress = new byte[6];
                byte[] dstAddress = new byte[6];
 
-               String src = srcMacAddress.getText(); //MAC ÁÖ¼Ò¸¦ String byte·Î º¯È¯
+               String src = srcMacAddress.getText(); //MAC ï¿½Ö¼Ò¸ï¿½ String byteï¿½ï¿½ ï¿½ï¿½È¯
                String dst = dstMacAddress.getText();
 
-               String[] byte_src = src.split("-"); //Sting MAC ÁÖ¼Ò¸¦"-"·Î ³ª´®
+               String[] byte_src = src.split("-"); //Sting MAC ï¿½Ö¼Ò¸ï¿½"-"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                for (int i = 0; i < 6; i++) {
-                  srcAddress[i] = (byte) Integer.parseInt(byte_src[i], 16); //16ºñÆ® (2byte)
+                  srcAddress[i] = (byte) Integer.parseInt(byte_src[i], 16); //16ï¿½ï¿½Æ® (2byte)
                }
 
-               String[] byte_dst = dst.split("-");//Sting MAC ÁÖ¼Ò¸¦"-"·Î ³ª´®
+               String[] byte_dst = dst.split("-");//Sting MAC ï¿½Ö¼Ò¸ï¿½"-"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                for (int i = 0; i < 6; i++) {
-                  dstAddress[i] = (byte) Integer.parseInt(byte_dst[i], 16);//16ºñÆ® (2byte)
+                  dstAddress[i] = (byte) Integer.parseInt(byte_dst[i], 16);//16ï¿½ï¿½Æ® (2byte)
                }
 
-               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetSrcAddress(srcAddress); //ÀÌºÎºÐÀ» ÅëÇØ ¼±ÅÃÇÑ ÁÖ¼Ò¸¦ ÇÁ·Î±×·¥ »ó ¼Ò½ºÁÖ¼Ò·Î »ç¿ë°¡´É
-               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetDstAddress(dstAddress); //ÀÌºÎºÐÀ» ÅëÇØ ¼±ÅÃÇÑ ÁÖ¼Ò¸¦ ÇÁ·Î±×·¥ »ó ¸ñÀûÁöÁÖ¼Ò·Î »ç¿ë°¡´É
+               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetSrcAddress(srcAddress); //ï¿½ÌºÎºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½
+               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetDstAddress(dstAddress); //ï¿½ÌºÎºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½
 
                ((NILayer) m_LayerMgr.GetLayer("NI")).SetAdapterNumber(adapterNumber);
 
-               Setting_Button.setText("Reset"); //setting ¹öÆ° ´©¸£¸é ¸®¼ÂÀ¸·Î ¹Ù²ñ
-               dstMacAddress.setEnabled(false);  //¹öÆ°À» ºñÈ°¼ºÈ­½ÃÅ´
-               srcMacAddress.setEnabled(false);  //¹öÆ°À» ºñÈ°¼ºÈ­½ÃÅ´  
+               Setting_Button.setText("Reset"); //setting ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½
+               dstMacAddress.setEnabled(false);  //ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ï¿½ï¿½Å´
+               srcMacAddress.setEnabled(false);  //ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ï¿½ï¿½Å´  
             } 
          }
 
-         if (e.getSource() == Chat_send_Button) { //send ¹öÆ° ´©¸£¸é, 
+         if (e.getSource() == Chat_send_Button) { //send ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 
             if (Setting_Button.getText() == "Reset") { 
-               String input = ChattingWrite.getText(); //Ã¤ÆÃÃ¢¿¡ ÀÔ·ÂµÈ ÅØ½ºÆ®¸¦ ÀúÀå
-               ChattingArea.append("[SEND] : " + input + "\n"); //¼º°øÇÏ¸é ÀÔ·Â°ª Ãâ·Â
-               byte[] bytes = input.getBytes(); //ÀÔ·ÂµÈ ¸Þ½ÃÁö¸¦ ¹ÙÀÌÆ®·Î ÀúÀå
+               String input = ChattingWrite.getText(); //Ã¤ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½Ô·Âµï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+               ChattingArea.append("[SEND] : " + input + "\n"); //ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ô·Â°ï¿½ ï¿½ï¿½ï¿½
+               byte[] bytes = input.getBytes(); //ï¿½Ô·Âµï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                
                ((ChatAppLayer)m_LayerMgr.GetLayer("ChatApp")).Send(bytes, bytes.length);
-               //Ã¤ÆÃÃ¢¿¡ ÀÔ·ÂµÈ ¸Þ½ÃÁö¸¦ chatApplayer·Î º¸³¿
+               //Ã¤ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½Ô·Âµï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ chatApplayerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                ChattingWrite.setText(""); 
-               //Ã¤ÆÃ ÀÔ·Â¶õ ´Ù½Ã ºñ¿öÁÜ
+               //Ã¤ï¿½ï¿½ ï¿½Ô·Â¶ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
             } else {
-               JOptionPane.showMessageDialog(null, "Address Setting Error!.");//ÁÖ¼Ò¼³Á¤ ¿¡·¯
+               JOptionPane.showMessageDialog(null, "Address Setting Error!.");//ï¿½Ö¼Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             }
          }
       }
@@ -331,15 +330,15 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
    }
 /////////////////////////////////////////////////////////////////////////////
 
-   public String get_MacAddress(byte[] byte_MacAddress) { //MAC ByteÁÖ¼Ò¸¦ StringÀ¸·Î º¯È¯
+   public String get_MacAddress(byte[] byte_MacAddress) { //MAC Byteï¿½Ö¼Ò¸ï¿½ Stringï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 
       String MacAddress = "";
       for (int i = 0; i < 6; i++) { 
-         //2ÀÚ¸® 16Áø¼ö¸¦ ´ë¹®ÀÚ·Î, ±×¸®°í 1ÀÚ¸® 16Áø¼ö´Â ¾Õ¿¡ 0À» ºÙÀÓ.
+         //2ï¿½Ú¸ï¿½ 16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ë¹®ï¿½Ú·ï¿½, ï¿½×¸ï¿½ï¿½ï¿½ 1ï¿½Ú¸ï¿½ 16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ 0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
          MacAddress += String.format("%02X%s", byte_MacAddress[i], (i < MacAddress.length() - 1) ? "" : "");
          
          if (i != 5) {
-            //2ÀÚ¸® 16Áø¼ö ÀÚ¸® ´ÜÀ§ µÚ¿¡ "-"ºÙ¿©ÁÖ±â
+            //2ï¿½Ú¸ï¿½ 16ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ "-"ï¿½Ù¿ï¿½ï¿½Ö±ï¿½
             MacAddress += "-";
          }
       } 
@@ -347,11 +346,11 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       return MacAddress;
    }
 
-   public boolean Receive(byte[] input) { //¸Þ½ÃÁö Receive
+   public boolean Receive(byte[] input) { //ï¿½Þ½ï¿½ï¿½ï¿½ Receive
       if (input != null) {
-         byte[] data = input;   //byte ´ÜÀ§ÀÇ input data
-         Text = new String(data); //¾Æ·¡Ãþ¿¡¼­ ¿Ã¶ó¿Â ¸Þ½ÃÁö¸¦ String text·Î º¯È¯ÇØÁÜ
-         ChattingArea.append("[RECV] : " + Text + "\n"); //Ã¤ÆÃÃ¢¿¡ ¼ö½Å¸Þ½ÃÁö¸¦ º¸¿©ÁÜ
+         byte[] data = input;   //byte ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ input data
+         Text = new String(data); //ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ String textï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
+         ChattingArea.append("[RECV] : " + Text + "\n"); //Ã¤ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½Å¸Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
          return false;
       }
       return false ;

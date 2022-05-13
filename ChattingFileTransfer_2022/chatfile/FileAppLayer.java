@@ -271,7 +271,7 @@ public class FileAppLayer implements BaseLayer {
                 ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setValue(receivedLength); // Progressbar 갱신
             }
         }
-        this.GetUnderLayer().fileSend(null, 0); // ack 송신
+        ((EthernetLayer)this.GetUnderLayer()).fileSend(null, 0); // ack 송신
         return true;
     }
 

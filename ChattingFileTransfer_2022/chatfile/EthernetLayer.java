@@ -63,18 +63,38 @@ public class EthernetLayer implements BaseLayer {
 	}
 
 	// 브로드 캐스트일 경우, type이 0xff
-	public boolean Send(byte[] input, int length) {
+	public boolean fileSend(byte[] input, int length) {
 		if (input == null && length == 0) // ack
-			m_sHeader.enet_type = intToByte2(2);
+			m_sHeader.enet_type = intToByte2(0x2091);
 		else if (isBroadcast(m_sHeader.enet_dstaddr.addr)) // broadcast
 			m_sHeader.enet_type = intToByte2(0xff);
 		else // nomal
-			m_sHeader.enet_type = intToByte2(1);
+			m_sHeader.enet_type = intToByte2(0x2090);
 		/*
 		과제#4
 		*/
 		byte[] bytes = ObjToByte(m_sHeader, input, length);
-		this.GetUnderLayer().Send(bytes, length + 14);
+		this.GetUnderLayer().Send(bytes, bytes.length);
+		return true;
+	}
+	
+	public boolean chatSend(byte[] input, int length) {
+		if (input == null && length == 0) // ack
+			m_sHeader.enet_type = intToByte2(0x2081);
+		else if (isBroadcast(m_sHeader.enet_dstaddr.addr)) // broadcast
+			m_sHeader.enet_type = intToByte2(0xff);
+		else // nomal
+			m_sHeader.enet_type = intToByte2(0x2080);
+		/*
+		과제#4
+		*/
+		byte[] bytes = ObjToByte(m_sHeader, input, length);
+		this.GetUnderLayer().Send(bytes, bytes.length);
+		return true;
+	}
+	
+	public boolean Send(byte[] input, int length) {
+		chatSend(input, length);
 		return true;
 	}
 
@@ -89,17 +109,30 @@ public class EthernetLayer implements BaseLayer {
 		byte[] data;
 		byte[] temp_src = m_sHeader.enet_srcaddr.addr;
 		int temp_type = byte2ToInt(input[12], input[13]); 
-		
+		ChatAppLayer chatAppLayer = (ChatAppLayer) this.GetUpperLayer(0);
+        FileAppLayer fileAppLayer = (FileAppLayer) this.GetUpperLayer(1);
 		/*
 		과제#4
 		 */
-		if(temp_type == 2) {
-			this.GetUpperLayer(0).Receive(null);
+		if(temp_type == 0x2081) {
+			if(!isMyPacket(input) && (isBroadcast(input) || chkAddr(input)))
+				chatAppLayer.Receive(null);
 		}
-		else if (temp_type == 1) {
+		else if(temp_type == 0x2091) {
+			if(!isMyPacket(input) && (isBroadcast(input) || chkAddr(input)))
+				fileAppLayer.Receive(null);
+		}
+		else if (temp_type == 0x2080) {
 			if(!isMyPacket(input) && (isBroadcast(input) || chkAddr(input))){
 				data = RemoveEthernetHeader(input, input.length);
-				this.GetUpperLayer(0).Receive(data);
+				chatAppLayer.Receive(data);
+				return true;
+			}
+		}
+		else if (temp_type == 0x2090) {
+			if(!isMyPacket(input) && (isBroadcast(input) || chkAddr(input))){
+				data = RemoveEthernetHeader(input, input.length);
+				fileAppLayer.Receive(data);
 				return true;
 			}
 		}

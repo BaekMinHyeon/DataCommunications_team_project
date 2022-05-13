@@ -15,11 +15,13 @@ public class FileAppLayer implements BaseLayer {
     private File file; // 저장할 파일
     private ArrayList<byte[]> fileByteList; // 수신한 파일 프레임(정렬 전)
     private ArrayList<byte[]> fileSortList; // 수신한 파일을 정렬 하는데 사용하는 리스트
+    private ArrayList<Boolean> ackChk = new ArrayList<Boolean>(); // ack를  저장할 리스트
 
     public FileAppLayer(String pName) {
         // TODO Auto-generated constructor stub
         pLayerName = pName;
         fileByteList = new ArrayList();
+        ackChk.add(true);
     }
 
     public class _FAPP_HEADER {
@@ -194,9 +196,25 @@ public class FileAppLayer implements BaseLayer {
 
         return buf;
     }
+    
+    private void waitACK() { //ACK 체크
+        while (ackChk.size() <= 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        ackChk.remove(0);
+    }
 
     public synchronized boolean Receive(byte[] input) { // 데이터를 수신 처리 함수
         byte[] data;
+        
+        if (input == null) { // ack 수신
+        	ackChk.add(true);
+        	return true;
+        }
 
         if(checkReceiveFileInfo(input)) { // 파일의 정보를 받은 경우
             data = RemoveCappHeader(input, input.length); // Header없애기
@@ -253,7 +271,7 @@ public class FileAppLayer implements BaseLayer {
                 ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setValue(receivedLength); // Progressbar 갱신
             }
         }
-
+        this.GetUnderLayer().fileSend(null, 0); // ack 송신
         return true;
     }
 
@@ -284,6 +302,7 @@ public class FileAppLayer implements BaseLayer {
 
     public boolean Send(byte[] input, int length) { // 데이터 송신 함수
         byte[] bytes = this.ObjToByte(m_sHeader, input, length);
+        waitACK();
         ((EthernetLayer)this.GetUnderLayer()).fileSend(bytes, length + 12);
         return true;
     }

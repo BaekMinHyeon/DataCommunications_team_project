@@ -68,6 +68,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       m_LayerMgr.AddLayer(new NILayer("NI"));
       m_LayerMgr.AddLayer(new EthernetLayer("Ethernet"));
       m_LayerMgr.AddLayer(new ChatAppLayer("ChatApp"));
+      m_LayerMgr.AddLayer(new FileAppLayer("FileApp"));
       /*
        * FileAppLayerµµ π≠æÓ¡‡æﬂ«‘
        */

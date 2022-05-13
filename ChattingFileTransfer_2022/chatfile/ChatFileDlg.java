@@ -26,7 +26,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jnetpcap.PcapIf;
 
-//import org.jnetpcap.PcapIf;
+import org.jnetpcap.PcapIf;
 
 public class ChatFileDlg extends JFrame implements BaseLayer {
 
@@ -111,7 +111,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       
       
       jbt_save = new JButton("Àü¼Û");
-      //jbt_save.setEnabled(false);
+      jbt_save.setEnabled(false);
       jbt_save.setBounds(290, 47, 60, 22);
       FilePanel.add(jbt_save);
       

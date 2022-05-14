@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -47,16 +46,16 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
 
    Container contentPane;
 
-   JTextArea ChattingArea; //ê��ȭ�� �����ִ� ��ġ
+   JTextArea ChattingArea; //챗팅화면 보여주는 위치
    JTextArea srcMacAddress;
    JTextArea dstMacAddress;
    JProgressBar progressBar;
 
-   JLabel lblsrc;  // Label(�̸�)
+   JLabel lblsrc;  // Label(이름)
    JLabel lbldst;
 
-   JButton Setting_Button; //Port��ȣ(�ּ�)�� �Է¹��� �� �Ϸ��ư����
-   JButton Chat_send_Button; //ä��ȭ���� ä�� �Է� �Ϸ� �� data Send��ư
+   JButton Setting_Button; //Port번호(주소)를 입력받은 후 완료버튼설정
+   JButton Chat_send_Button; //채팅화면의 채팅 입력 완료 후 data Send버튼
 
    static JComboBox<String> NICComboBox;
 
@@ -70,7 +69,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       m_LayerMgr.AddLayer(new ChatAppLayer("ChatApp"));
       m_LayerMgr.AddLayer(new FileAppLayer("FileApp"));
       /*
-       * FileAppLayer�� ���������
+       * FileAppLayer도 묶어줘야함
        */
       m_LayerMgr.AddLayer(new ChatFileDlg("GUI"));
       /////////////////////////////////////////////////////////////////////////////
@@ -105,12 +104,12 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       jfc.setFileFilter(new FileNameExtensionFilter("txt", "txt"));
         jfc.setMultiSelectionEnabled(false);
 
-      jbt_open = new JButton("����");
+      jbt_open = new JButton("열기");
       jbt_open.setBounds(290, 17, 60, 22);
       FilePanel.add(jbt_open);
       
       
-      jbt_save = new JButton("����");
+      jbt_save = new JButton("전송");
       jbt_save.setEnabled(false);
       jbt_save.setBounds(290, 47, 60, 22);
       FilePanel.add(jbt_save);
@@ -120,7 +119,8 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          @Override
          public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            ((FileAppLayer) GetUnderLayer(1)).setAndStartSendFile();
+            FileAppLayer fileLayer= (FileAppLayer) GetUnderLayer(1);
+            fileLayer.setAndStartSendFile();
          }
       });
       
@@ -169,7 +169,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       chattingInputPanel.add(ChattingWrite);
       ChattingWrite.setColumns(10);// writing area
 
-      JPanel settingPanel = new JPanel(); //Setting ���� �г�
+      JPanel settingPanel = new JPanel(); //Setting 관련 패널
       settingPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "setting",
             TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
       settingPanel.setBounds(380, 5, 236, 371);
@@ -183,8 +183,8 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       sourceAddressPanel.setLayout(null);
 
       lblsrc = new JLabel("Source Mac Address");
-      lblsrc.setBounds(10, 115, 170, 20); //��ġ ����
-      settingPanel.add(lblsrc); //panel �߰�
+      lblsrc.setBounds(10, 115, 170, 20); //위치 지정
+      settingPanel.add(lblsrc); //panel 추가
 
       srcMacAddress = new JTextArea();
       srcMacAddress.setBounds(2, 2, 170, 20); 
@@ -214,15 +214,15 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
    
       
       
-      NILayer tempNiLayer = (NILayer) m_LayerMgr.GetLayer("NI"); //�޺��ڽ� ����Ʈ�� �߰��ϱ� ���� �������̽� ��ü
+      NILayer tempNiLayer = (NILayer) m_LayerMgr.GetLayer("NI"); //콤보박스 리스트에 추가하기 위한 인터페이스 객체
 
-      for (int i = 0; i < tempNiLayer.getAdapterList().size(); i++) { //��Ʈ��ũ �������̽��� ����� ��� ����Ʈ�� �����ŭ�� �迭 ����
+      for (int i = 0; i < tempNiLayer.getAdapterList().size(); i++) { //네트워크 인터페이스가 저장된 어뎁터 리스트의 사이즈만큼의 배열 생성
          //NICComboBox.addItem(((NILayer) m_LayerMgr.GetLayer("NI")).GetAdapterObject(i).getDescription());
          PcapIf pcapIf = tempNiLayer.GetAdapterObject(i); //
-         NICComboBox.addItem(pcapIf.getName()); // NIC ���� â�� ����͸� ������
+         NICComboBox.addItem(pcapIf.getName()); // NIC 선택 창에 어댑터를 보여줌
       }
 
-      NICComboBox.addActionListener(new ActionListener() { //combo�ڽ��� ������ ���� ����
+      NICComboBox.addActionListener(new ActionListener() { //combo박스를 눌렀을 때의 동작
 
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -243,7 +243,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          }
       });
 
-      try {// ������ MAC�ּ� ���̰��ϱ�
+      try {// 저절로 MAC주소 보이게하기
          srcMacAddress.append(get_MacAddress(
                ((NILayer) m_LayerMgr.GetLayer("NI")).GetAdapterObject(adapterNumber).getHardwareAddress()));
       } catch (IOException e1) {
@@ -270,56 +270,56 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-         if (e.getSource() == Setting_Button) { //setting ��ư ���� ��
+         if (e.getSource() == Setting_Button) { //setting 버튼 누를 시
 
-            if (Setting_Button.getText() == "Reset") { //reset �������� ���,
-               srcMacAddress.setText("");  //�ּ� �������� �ٲ�
-               dstMacAddress.setText("");  //�ּ� �������� �ٲ�
-               Setting_Button.setText("Setting"); //��ư�� ������, setting���� �ٲ�
-               srcMacAddress.setEnabled(true);  //��ư�� Ȱ��ȭ��Ŵ
-               dstMacAddress.setEnabled(true);  //��ư�� Ȱ��ȭ��Ŵ
+            if (Setting_Button.getText() == "Reset") { //reset 눌려졌을 경우,
+               srcMacAddress.setText("");  //주소 공백으로 바뀜
+               dstMacAddress.setText("");  //주소 공백으로 바뀜
+               Setting_Button.setText("Setting"); //버튼을 누르면, setting으로 바뀜
+               srcMacAddress.setEnabled(true);  //버튼을 활성화시킴
+               dstMacAddress.setEnabled(true);  //버튼을 활성화시킴
             }  
-            else { //�ۼ����ּ� ����
+            else { //송수신주소 설정
                 
                byte[] srcAddress = new byte[6];
                byte[] dstAddress = new byte[6];
 
-               String src = srcMacAddress.getText(); //MAC �ּҸ� String byte�� ��ȯ
+               String src = srcMacAddress.getText(); //MAC 주소를 String byte로 변환
                String dst = dstMacAddress.getText();
 
-               String[] byte_src = src.split("-"); //Sting MAC �ּҸ�"-"�� ����
+               String[] byte_src = src.split("-"); //Sting MAC 주소를"-"로 나눔
                for (int i = 0; i < 6; i++) {
-                  srcAddress[i] = (byte) Integer.parseInt(byte_src[i], 16); //16��Ʈ (2byte)
+                  srcAddress[i] = (byte) Integer.parseInt(byte_src[i], 16); //16비트 (2byte)
                }
 
-               String[] byte_dst = dst.split("-");//Sting MAC �ּҸ�"-"�� ����
+               String[] byte_dst = dst.split("-");//Sting MAC 주소를"-"로 나눔
                for (int i = 0; i < 6; i++) {
-                  dstAddress[i] = (byte) Integer.parseInt(byte_dst[i], 16);//16��Ʈ (2byte)
+                  dstAddress[i] = (byte) Integer.parseInt(byte_dst[i], 16);//16비트 (2byte)
                }
 
-               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetSrcAddress(srcAddress); //�̺κ��� ���� ������ �ּҸ� ���α׷� �� �ҽ��ּҷ� ��밡��
-               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetDstAddress(dstAddress); //�̺κ��� ���� ������ �ּҸ� ���α׷� �� �������ּҷ� ��밡��
+               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetSrcAddress(srcAddress); //이부분을 통해 선택한 주소를 프로그램 상 소스주소로 사용가능
+               ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetDstAddress(dstAddress); //이부분을 통해 선택한 주소를 프로그램 상 목적지주소로 사용가능
 
                ((NILayer) m_LayerMgr.GetLayer("NI")).SetAdapterNumber(adapterNumber);
 
-               Setting_Button.setText("Reset"); //setting ��ư ������ �������� �ٲ�
-               dstMacAddress.setEnabled(false);  //��ư�� ��Ȱ��ȭ��Ŵ
-               srcMacAddress.setEnabled(false);  //��ư�� ��Ȱ��ȭ��Ŵ  
+               Setting_Button.setText("Reset"); //setting 버튼 누르면 리셋으로 바뀜
+               dstMacAddress.setEnabled(false);  //버튼을 비활성화시킴
+               srcMacAddress.setEnabled(false);  //버튼을 비활성화시킴  
             } 
          }
 
-         if (e.getSource() == Chat_send_Button) { //send ��ư ������, 
+         if (e.getSource() == Chat_send_Button) { //send 버튼 누르면, 
             if (Setting_Button.getText() == "Reset") { 
-               String input = ChattingWrite.getText(); //ä��â�� �Էµ� �ؽ�Ʈ�� ����
-               ChattingArea.append("[SEND] : " + input + "\n"); //�����ϸ� �Է°� ���
-               byte[] bytes = input.getBytes(); //�Էµ� �޽����� ����Ʈ�� ����
+               String input = ChattingWrite.getText(); //채팅창에 입력된 텍스트를 저장
+               ChattingArea.append("[SEND] : " + input + "\n"); //성공하면 입력값 출력
+               byte[] bytes = input.getBytes(); //입력된 메시지를 바이트로 저장
                
                ((ChatAppLayer)m_LayerMgr.GetLayer("ChatApp")).Send(bytes, bytes.length);
-               //ä��â�� �Էµ� �޽����� chatApplayer�� ����
+               //채팅창에 입력된 메시지를 chatApplayer로 보냄
                ChattingWrite.setText(""); 
-               //ä�� �Է¶� �ٽ� �����
+               //채팅 입력란 다시 비워줌
             } else {
-               JOptionPane.showMessageDialog(null, "Address Setting Error!.");//�ּҼ��� ����
+               JOptionPane.showMessageDialog(null, "Address Setting Error!.");//주소설정 에러
             }
          }
       }
@@ -330,15 +330,15 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
    }
 /////////////////////////////////////////////////////////////////////////////
 
-   public String get_MacAddress(byte[] byte_MacAddress) { //MAC Byte�ּҸ� String���� ��ȯ
+   public String get_MacAddress(byte[] byte_MacAddress) { //MAC Byte주소를 String으로 변환
 
       String MacAddress = "";
       for (int i = 0; i < 6; i++) { 
-         //2�ڸ� 16������ �빮�ڷ�, �׸��� 1�ڸ� 16������ �տ� 0�� ����.
+         //2자리 16진수를 대문자로, 그리고 1자리 16진수는 앞에 0을 붙임.
          MacAddress += String.format("%02X%s", byte_MacAddress[i], (i < MacAddress.length() - 1) ? "" : "");
          
          if (i != 5) {
-            //2�ڸ� 16���� �ڸ� ���� �ڿ� "-"�ٿ��ֱ�
+            //2자리 16진수 자리 단위 뒤에 "-"붙여주기
             MacAddress += "-";
          }
       } 
@@ -346,11 +346,11 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       return MacAddress;
    }
 
-   public boolean Receive(byte[] input) { //�޽��� Receive
+   public boolean Receive(byte[] input) { //메시지 Receive
       if (input != null) {
-         byte[] data = input;   //byte ������ input data
-         Text = new String(data); //�Ʒ������� �ö�� �޽����� String text�� ��ȯ����
-         ChattingArea.append("[RECV] : " + Text + "\n"); //ä��â�� ���Ÿ޽����� ������
+         byte[] data = input;   //byte 단위의 input data
+         Text = new String(data); //아래층에서 올라온 메시지를 String text로 변환해줌
+         ChattingArea.append("[RECV] : " + Text + "\n"); //채팅창에 수신메시지를 보여줌
          return false;
       }
       return false ;

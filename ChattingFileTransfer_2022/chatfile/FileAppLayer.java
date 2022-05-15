@@ -133,9 +133,10 @@ public class FileAppLayer implements BaseLayer {
             BufferedInputStream fileReader = new BufferedInputStream(fileInputStream);
             sendTotalLength = (int)sendFile.length();
             this.setFileSize(sendTotalLength);
-            byte[] sendData =new byte[1448];
+            ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setMinimum(0);
             ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setMaximum(sendTotalLength);
             if(sendTotalLength <= 1448) {
+            	byte[] sendData = new byte[sendTotalLength];
                 // 파일 정보 송신
                 setFragmentation(0);
                 this.setFileMsgType(0);
@@ -145,9 +146,15 @@ public class FileAppLayer implements BaseLayer {
                 this.setFileMsgType(1);
                 fileReader.read(sendData);
                 this.Send(sendData, sendData.length);
+                try {
+                    Thread.sleep(4);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendedLength += sendData.length;
                 ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setValue(sendedLength);
             } else {
+            	byte[] sendData = new byte[1448];
                 sendedLength = 0;
                 // 파일 정보 송신
                 this.setFragmentation(0);
@@ -182,6 +189,7 @@ public class FileAppLayer implements BaseLayer {
                 count = 0;
                 ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setValue(sendedLength);
             }
+            ((ChatFileDlg)this.GetUpperLayer(0)).ChattingArea.append(sendFile.getName() + "전송 완료\n");
             fileInputStream.close();
             fileReader.close();
         } catch(IOException e) {
@@ -218,7 +226,7 @@ public class FileAppLayer implements BaseLayer {
 
         if(checkReceiveFileInfo(input)) { // 파일의 정보를 받은 경우
             data = RemoveCappHeader(input, input.length); // Header없애기
-            String fileName = new String(data);
+            fileName = new String(data);
             fileName = fileName.trim();
             targetLength = calcFileFullLength(input); // 받아야 하는 총 크기 초기화
             file = new File("./" + fileName); //받는 경로..
@@ -237,9 +245,14 @@ public class FileAppLayer implements BaseLayer {
                 fileByteList.add(this.calcSeqNum(input), data);
                 try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                     fileOutputStream.write(fileByteList.get(0));
+                    ((ChatFileDlg)this.GetUpperLayer(0)).ChattingArea.append(fileName + "파일 수신 및 생성 완료\n");
+                    fileByteList = new ArrayList();
                 } catch (IOException e) {
+                	((ChatFileDlg)this.GetUpperLayer(0)).ChattingArea.append("파일 수신 실패\n");
                     e.printStackTrace();
                 }
+                ((ChatFileDlg)this.GetUpperLayer(0)).progressBar.setValue(targetLength); // Progressbar 갱신
+                
             } else {
                 // 단편화를 진행한 데이터를 받은 경우
 
@@ -257,7 +270,7 @@ public class FileAppLayer implements BaseLayer {
                                 data = RemoveCappHeader(fileSortList.get(frameCount), fileSortList.get(frameCount).length);
                                 fileOutputStream.write(data);
                             }
-                            ((ChatFileDlg)this.GetUpperLayer(0)).ChattingArea.append("파일 수신 및 생성 완료\n");
+                            ((ChatFileDlg)this.GetUpperLayer(0)).ChattingArea.append(fileName + "파일 수신 및 생성 완료\n");
                             fileByteList = new ArrayList();
                         } catch (FileNotFoundException e) {
                             ((ChatFileDlg)this.GetUpperLayer(0)).ChattingArea.append("파일 수신 실패\n");

@@ -130,6 +130,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
               if(jfc.showOpenDialog(FilePanel) == JFileChooser.APPROVE_OPTION){
+            	 progressBar.setValue(0);
                  fileArea.setText(jfc.getSelectedFile().toString());
                  file = new File(jfc.getSelectedFile().toString());
                  jbt_save.setEnabled(true);
@@ -138,6 +139,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       });
       
       progressBar = new JProgressBar();
+      progressBar.setStringPainted(true);
       progressBar.setBounds(10, 45, 270, 25);
       FilePanel.add(progressBar);
 /////////////////////////////////////////////////////////////////////////////

@@ -95,7 +95,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       contentPane.add(FilePanel);
       FilePanel.setLayout(null);
 
-      fileArea = new JTextArea(" ");
+      fileArea = new JTextArea("");
       fileArea.setEditable(false);
       fileArea.setBounds(10, 17, 270, 22);
       FilePanel.add(fileArea);
@@ -232,7 +232,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
             //adapterNumber = NICComboBox.getSelectedIndex();
             JComboBox jcombo = (JComboBox) e.getSource();
             adapterNumber = jcombo.getSelectedIndex();
-            System.out.println("Index: " + adapterNumber); 
+            System.out.println("Index: " + adapterNumber);
             try {
                srcMacAddress.setText("");
                srcMacAddress.append(get_MacAddress(((NILayer) m_LayerMgr.GetLayer("NI"))
@@ -280,6 +280,11 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
                Setting_Button.setText("Setting"); //버튼을 누르면, setting으로 바뀜
                srcMacAddress.setEnabled(true);  //버튼을 활성화시킴
                dstMacAddress.setEnabled(true);  //버튼을 활성화시킴
+               ChattingArea.setText(""); // 초기화
+               fileArea.setText(""); // 초기화
+               progressBar.setValue(0); // 프로그래스바 초기화
+               jbt_save.setEnabled(false); // 전송 비활성화
+               ((NILayer) m_LayerMgr.GetLayer("NI")).clean(); // pcap close
             }  
             else { //송수신주소 설정
                 

@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import org.jnetpcap.Pcap;
+import org.jnetpcap.PcapClosedException;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
@@ -14,7 +15,6 @@ public class NILayer implements BaseLayer {
 	public String pLayerName = null;
 	public BaseLayer p_UnderLayer = null;
 	public ArrayList<BaseLayer> p_aUpperLayer = new ArrayList<BaseLayer>();
-
 	int m_iNumAdapter;
 	public Pcap m_AdapterObject;
 	public PcapIf device;
@@ -39,6 +39,10 @@ public class NILayer implements BaseLayer {
 		m_pAdapterList = new ArrayList<PcapIf>();
 		m_iNumAdapter = 0;
 		SetAdapterList();
+	}
+	
+	public void clean(){
+		m_AdapterObject.close();
 	}
 
 	public void PacketStartDriver() {
@@ -149,14 +153,18 @@ class Receive_Thread implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			PcapPacketHandler<String> jpacketHandler = new PcapPacketHandler<String>() {
-				public void nextPacket(PcapPacket packet, String user) {
-					data = packet.getByteArray(0, packet.size());
-					UpperLayer.Receive(data);
-				}
-			};
+			try{
+				PcapPacketHandler<String> jpacketHandler = new PcapPacketHandler<String>() {
+					public void nextPacket(PcapPacket packet, String user) {
+						data = packet.getByteArray(0, packet.size());
+						UpperLayer.Receive(data);
+					}
+				};
+				AdapterObject.loop(100000, jpacketHandler, "");
+			}catch(PcapClosedException e){
+				break;
+			}
 
-			AdapterObject.loop(100000, jpacketHandler, "");
 		}
 	}
 }

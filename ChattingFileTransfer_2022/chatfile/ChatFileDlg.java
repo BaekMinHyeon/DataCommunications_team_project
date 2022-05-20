@@ -33,13 +33,11 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
    public ArrayList<BaseLayer> p_aUnderLayer = new ArrayList<BaseLayer>();
    public ArrayList<BaseLayer> p_aUpperLayer = new ArrayList<BaseLayer>();
    BaseLayer UnderLayer;
-////////////////////////////////////////////////////////////////
    private JFileChooser jfc;
    private JButton jbt_open;
    private JButton jbt_save;
    JTextArea fileArea;
    File file;
-/////////////////////////////////////////////////////////////////////
    private static LayerManager m_LayerMgr = new LayerManager();
 
    private JTextField ChattingWrite;
@@ -68,13 +66,9 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       m_LayerMgr.AddLayer(new EthernetLayer("Ethernet"));
       m_LayerMgr.AddLayer(new ChatAppLayer("ChatApp"));
       m_LayerMgr.AddLayer(new FileAppLayer("FileApp"));
-      /*
-       * FileAppLayer도 묶어줘야함
-       */
+
       m_LayerMgr.AddLayer(new ChatFileDlg("GUI"));
-      /////////////////////////////////////////////////////////////////////////////
       m_LayerMgr.ConnectLayers(" NI ( *Ethernet ( *ChatApp ( *GUI ) *FileApp ( *GUI ) )");
-      /////////////////////////////////////////////////////////////////////////////
    }
 
    public ChatFileDlg(String pName) {
@@ -87,7 +81,6 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       ((JComponent) contentPane).setBorder(new EmptyBorder(5, 5, 5, 5));
       setContentPane(contentPane);
       contentPane.setLayout(null);
-/////////////////////////////////////////////////////////////////////////////
       JPanel FilePanel = new JPanel();// chatting panel
       FilePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "file seding",
             TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -143,7 +136,6 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       progressBar.setStringPainted(true);
       progressBar.setBounds(10, 45, 270, 25);
       FilePanel.add(progressBar);
-/////////////////////////////////////////////////////////////////////////////
       JPanel chattingPanel = new JPanel();// chatting panel
       chattingPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "chatting",
             TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -332,11 +324,9 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          }
       }
    }
-/////////////////////////////////////////////////////////////////////////////
    public File getFile() {
       return file;
    }
-/////////////////////////////////////////////////////////////////////////////
 
    public String get_MacAddress(byte[] byte_MacAddress) { //MAC Byte주소를 String으로 변환
 
@@ -364,7 +354,6 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       return false ;
    }
    
-/////////////////////////////////////////////////////////////////////////////
    @Override
    public void SetUnderLayer(BaseLayer pUnderLayer) {
       // TODO Auto-generated method stub
@@ -372,7 +361,6 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
          return;
       this.p_aUnderLayer.add(nUnderLayerCount++, pUnderLayer);
    }
-/////////////////////////////////////////////////////////////////////////////
    
    @Override
    public void SetUpperLayer(BaseLayer pUpperLayer) {
@@ -388,14 +376,14 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
       // TODO Auto-generated method stub
       return pLayerName;
    }
-/////////////////////////////////////////////////////////////////////////////
+   
    public BaseLayer GetUnderLayer(int i) {
       // TODO Auto-generated method stub
       if (p_aUnderLayer == null)
          return null;
       return p_aUnderLayer.get(i);
    }
-/////////////////////////////////////////////////////////////////////////////
+
    @Override
    public BaseLayer GetUpperLayer(int nindex) {
       // TODO Auto-generated method stub

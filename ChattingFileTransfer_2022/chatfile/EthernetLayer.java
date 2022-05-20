@@ -70,9 +70,7 @@ public class EthernetLayer implements BaseLayer {
 			m_sHeader.enet_type = intToByte2(0xff);
 		else // nomal
 			m_sHeader.enet_type = intToByte2(0x2090);
-		/*
-		과제#4
-		*/
+
 		byte[] bytes = ObjToByte(m_sHeader, input, length);
 		this.GetUnderLayer().Send(bytes, bytes.length);
 		return true;
@@ -85,9 +83,7 @@ public class EthernetLayer implements BaseLayer {
 			m_sHeader.enet_type = intToByte2(0xff);
 		else // nomal
 			m_sHeader.enet_type = intToByte2(0x2080);
-		/*
-		과제#4
-		*/
+
 		byte[] bytes = ObjToByte(m_sHeader, input, length);
 		this.GetUnderLayer().Send(bytes, bytes.length);
 		return true;
@@ -111,9 +107,7 @@ public class EthernetLayer implements BaseLayer {
 		int temp_type = byte2ToInt(input[12], input[13]); 
 		ChatAppLayer chatAppLayer = (ChatAppLayer) this.GetUpperLayer(0);
         FileAppLayer fileAppLayer = (FileAppLayer) this.GetUpperLayer(1);
-		/*
-		과제#4
-		 */
+
 		if(temp_type == 0x2081) {
 			if(!isMyPacket(input) && (isBroadcast(input) || chkAddr(input)))
 				chatAppLayer.Receive(null);

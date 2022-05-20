@@ -69,7 +69,7 @@ public class ChatAppLayer implements BaseLayer {
         }
         ackChk.remove(0);
     }
-  /**/
+
     private void fragSend(byte[] input, int length) {
         byte[] bytes = new byte[1456];
         int i = 0;
@@ -82,7 +82,7 @@ public class ChatAppLayer implements BaseLayer {
         this.GetUnderLayer().Send(bytes, bytes.length);
 
         int maxLen = length / 1456;
-        	/*과제  */
+ 
         int len = 1456;
         if(length % 1456 != 0){
         	len = length % 1456;
@@ -115,8 +115,7 @@ public class ChatAppLayer implements BaseLayer {
         m_sHeader.capp_totlen = intToByte2(length);
         m_sHeader.capp_type = (byte) (0x00);
  
-        /*  과제  
-         */
+
         waitACK();
         if (length > 1456) {
         	fragSend(input, length);
@@ -139,12 +138,10 @@ public class ChatAppLayer implements BaseLayer {
         tempType |= (byte) (input[2] & 0xFF);
         
         if(tempType == 0) {
-            /*  과제   */
         	data = RemoveCappHeader(input, input.length);
         	this.GetUpperLayer(0).Receive(data);
         }
         else{
-            /*  과제   */
         	if (tempType == 1) {
         		int size = byte2ToInt(input[0], input[1]);
         		fragBytes = new byte[byte2ToInt(input[0], input[1])];

@@ -105,6 +105,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
         jfc.setMultiSelectionEnabled(false);
 
       jbt_open = new JButton("열기");
+      jbt_open.setEnabled(false);
       jbt_open.setBounds(290, 17, 60, 22);
       FilePanel.add(jbt_open);
       
@@ -308,7 +309,7 @@ public class ChatFileDlg extends JFrame implements BaseLayer {
                ((EthernetLayer) m_LayerMgr.GetLayer("Ethernet")).SetEnetDstAddress(dstAddress); //이부분을 통해 선택한 주소를 프로그램 상 목적지주소로 사용가능
 
                ((NILayer) m_LayerMgr.GetLayer("NI")).SetAdapterNumber(adapterNumber);
-
+               jbt_open.setEnabled(true);
                Setting_Button.setText("Reset"); //setting 버튼 누르면 리셋으로 바뀜
                dstMacAddress.setEnabled(false);  //버튼을 비활성화시킴
                srcMacAddress.setEnabled(false);  //버튼을 비활성화시킴  
